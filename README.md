@@ -1,62 +1,41 @@
-# KKProgressToolbar
+# APProgressToolbar
 
-KKProgressToolbar is an iOS toolbar library
+A Swift package providing a customizable toolbar with a progress bar, title, and cancel button for iOS. Easily integrate progress tracking into your app’s UI with animated show/hide functionality.
 
-[![Build Status](https://github.com/aporat/KKProgressToolbar/workflows/Tests/badge.svg)](https://github.com/aporat/KKProgressToolbar/actions)
-[![Cocoapods](https://img.shields.io/cocoapods/v/KKProgressToolbar.svg)](https://cocoapods.org/pods/SwifterSwift)
-[![Swift](https://img.shields.io/badge/Swift-5.0-orange.svg)](https://swift.org)
-[![Xcode](https://img.shields.io/badge/Xcode-11.4-blue.svg)](https://developer.apple.com/xcode)
-[![MIT](https://img.shields.io/badge/License-MIT-red.svg)](https://opensource.org/licenses/MIT)
-
-![](https://github.com/aporat/KKProgressToolbar/raw/master/screenshots/iphone-1.png) 
-&nbsp;&nbsp;&nbsp;
-![](https://github.com/aporat/KKProgressToolbar/raw/master/screenshots/ipad-1.png) 
-
-
-## Demo
-
-build and run the `KKProgressToolbarExample` project in Xcode to see `KKProgressToolbar` in action.
+[![Swift](https://img.shields.io/badge/Swift-5.9_5.10_6.0-orange?style=flat-square)](https://img.shields.io/badge/Swift-5.9_5.10_6.0-Orange?style=flat-square)
+[![Platforms](https://img.shields.io/badge/Platforms-macOS_iOS_tvOS_watchOS_visionOS_-yellowgreen?style=flat-square)](https://img.shields.io/badge/Platforms-macOS_iOS_tvOS_watchOS_vision_OS?style=flat-square)
+[![Swift Package Manager](https://img.shields.io/badge/Swift_Package_Manager-compatible-orange?style=flat-square)](https://img.shields.io/badge/Swift_Package_Manager-compatible-orange?style=flat-square)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/aporat/APProgressToolbar/ci.yml?style=flat-square)
 
 ## Installation
 
-The recommended approach for installing SocialAccounts is via the [CocoaPods](http://cocoapods.org/) package manager, as it provides flexible dependency management and dead simple installation.
+### Swift Package Manager
+Add `APProgressToolbar` to your project via Swift Package Manager:
 
-Install CocoaPods if not already available:
+1. In Xcode, go to `File > Add Package Dependency`.
+2. Enter the repository URL:
+   ```
+   https://github.com/aporat/APProgressToolbar.git
+   ```
+3. Specify the version or branch (e.g., `main`) and add it to your target.
 
-``` bash
-$ [sudo] gem install cocoapods
-$ pod setup
+Or, manually add it to your `Package.swift`:
+```swift
+dependencies: [
+    .package(url: "https://github.com/aporat/APProgressToolbar.git", from: "1.0.0")
+]
+```
+Then include it in your target:
+```swift
+.target(name: "YourTarget", dependencies: ["APProgressToolbar"])
 ```
 
-Edit your Podfile and add `KKProgressToolbar`:
-
-``` bash
-$ edit Podfile
-platform :ios, '12.0'
-
-pod 'KKProgressToolbar'
-```
-
-Install into your Xcode project:
-
-``` bash
-$ pod install
-```
-
-Add `import KKProgressToolbar"` to the top of classes that will use it.
-
-
-## Example Usage
-
-### Showing and Hiding the toolbar
-
-
-``` swift
-
+## Usage
+```swift
 class ViewController: UIViewController {
-    
-    lazy fileprivate var loadingToolbar: KKProgressToolbar = {
-        let view = KKProgressToolbar()
+
+    lazy fileprivate var loadingToolbar: APProgressToolbar = {
+        let view = APProgressToolbar()
         view.progressBar.barBorderColor = .black
         view.progressBar.barBackgroundColor = .black
         view.progressBar.barBorderWidth = 1
@@ -85,11 +64,10 @@ class ViewController: UIViewController {
     }
 }
 
-// MARK: - KKProgressToolbarDelegate
-extension ViewController: KKProgressToolbarDelegate {
-    func didCancelButtonPressed(_ toolbar: KKProgressToolbar) {
-        
+// MARK: - APProgressToolbarDelegate
+extension ViewController: APProgressToolbarDelegate {
+func didCancelButtonPressed(_ toolbar: APProgressToolbar) {
+
     }
 }
-
 ```

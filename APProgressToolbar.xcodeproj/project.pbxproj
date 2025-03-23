@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 63;
+	objectVersion = 77;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -29,11 +29,9 @@
 /* Begin PBXFileReference section */
 		532E78BC24F4A822000D92FC /* APProgressToolbar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = APProgressToolbar.h; sourceTree = "<group>"; };
 		535D10AF24F4A21400E3006D /* APProgressToolbar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APProgressToolbar.swift; sourceTree = "<group>"; };
-		535D10B024F4A21400E3006D /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		537EDD0424F49F1E003DC54A /* APProgressToolbar.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = APProgressToolbar.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		537EDD0D24F49F1E003DC54A /* APProgressToolbarTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = APProgressToolbarTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		537EDD1224F49F1E003DC54A /* ProgressToolbarTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressToolbarTests.swift; sourceTree = "<group>"; };
-		537EDD1424F49F1E003DC54A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		77EAA5C72D22198200A60EB2 /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -59,22 +57,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		535D10AE24F4A21400E3006D /* APProgressToolbar */ = {
+		535D10AE24F4A21400E3006D /* Sources */ = {
 			isa = PBXGroup;
 			children = (
 				535D10AF24F4A21400E3006D /* APProgressToolbar.swift */,
-				535D10B024F4A21400E3006D /* Info.plist */,
 				532E78BC24F4A822000D92FC /* APProgressToolbar.h */,
 			);
-			path = APProgressToolbar;
+			path = Sources;
 			sourceTree = "<group>";
 		};
 		537EDCFA24F49F1E003DC54A = {
 			isa = PBXGroup;
 			children = (
 				77EAA5C72D22198200A60EB2 /* Package.swift */,
-				535D10AE24F4A21400E3006D /* APProgressToolbar */,
-				537EDD1124F49F1E003DC54A /* APProgressToolbarTests */,
+				535D10AE24F4A21400E3006D /* Sources */,
+				537EDD1124F49F1E003DC54A /* Tests */,
 				537EDD0524F49F1E003DC54A /* Products */,
 			);
 			sourceTree = "<group>";
@@ -88,13 +85,12 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		537EDD1124F49F1E003DC54A /* APProgressToolbarTests */ = {
+		537EDD1124F49F1E003DC54A /* Tests */ = {
 			isa = PBXGroup;
 			children = (
 				537EDD1224F49F1E003DC54A /* ProgressToolbarTests.swift */,
-				537EDD1424F49F1E003DC54A /* Info.plist */,
 			);
-			path = APProgressToolbarTests;
+			path = Tests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -155,7 +151,7 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1160;
 				LastUpgradeCheck = 1620;
-				ORGANIZATIONNAME = aporat28;
+				ORGANIZATIONNAME = "";
 				TargetAttributes = {
 					537EDD0324F49F1E003DC54A = {
 						CreatedOnToolsVersion = 11.6;
@@ -167,7 +163,6 @@
 				};
 			};
 			buildConfigurationList = 537EDCFE24F49F1E003DC54A /* Build configuration list for PBXProject "APProgressToolbar" */;
-			compatibilityVersion = "Xcode 15.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -179,6 +174,7 @@
 				7747C81F2D22161700803000 /* XCRemoteSwiftPackageReference "SnapKit" */,
 				77EAA5C82D221AD900A60EB2 /* XCRemoteSwiftPackageReference "GTProgressBar" */,
 			);
+			preferredProjectObjectVersion = 77;
 			productRefGroup = 537EDD0524F49F1E003DC54A /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -370,7 +366,7 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_MODULE_VERIFIER = YES;
-				INFOPLIST_FILE = APProgressToolbar/Info.plist;
+				GENERATE_INFOPLIST_FILE = YES;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -379,7 +375,7 @@
 					"@loader_path/Frameworks",
 				);
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++14";
-				PRODUCT_BUNDLE_IDENTIFIER = com.aporat28.ProgressToolbar;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aporat.ProgressToolbar;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -399,7 +395,7 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_MODULE_VERIFIER = YES;
-				INFOPLIST_FILE = APProgressToolbar/Info.plist;
+				GENERATE_INFOPLIST_FILE = YES;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -408,7 +404,7 @@
 					"@loader_path/Frameworks",
 				);
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++14";
-				PRODUCT_BUNDLE_IDENTIFIER = com.aporat28.ProgressToolbar;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aporat.ProgressToolbar;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
@@ -421,14 +417,14 @@
 			buildSettings = {
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = KKProgressToolbarTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.aporat28.ProgressToolbarTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aporat.ProgressToolbarTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -440,14 +436,14 @@
 			buildSettings = {
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = KKProgressToolbarTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.aporat28.ProgressToolbarTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.aporat.ProgressToolbarTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

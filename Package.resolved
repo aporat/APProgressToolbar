@@ -1,0 +1,23 @@
+{
+  "pins" : [
+    {
+      "identity" : "gtprogressbar",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/aporat/GTProgressBar.git",
+      "state" : {
+        "revision" : "9a23f6a96b66ee39d75bd385ef3c431a8a8d9f2a",
+        "version" : "1.0.0"
+      }
+    },
+    {
+      "identity" : "snapkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SnapKit/SnapKit.git",
+      "state" : {
+        "revision" : "2842e6e84e82eb9a8dac0100ca90d9444b0307f4",
+        "version" : "5.7.1"
+      }
+    }
+  ],
+  "version" : 2
+}
