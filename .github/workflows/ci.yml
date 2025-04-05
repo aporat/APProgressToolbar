@@ -31,6 +31,48 @@ jobs:
       - name: Run test on ${{ matrix.platform }} (iOS ${{ matrix.os }})
         run: |
           xcodebuild test \
-            -scheme $scheme \
-            -destination 'platform=iOS Simulator,name=${{ matrix.platform }},OS=${{ matrix.os }}'
+            -scheme ${{ env.scheme }} \
+            -destination 'platform=iOS Simulator,name=${{ matrix.platform }},OS=${{ matrix.os }}' \
+            -enableCodeCoverage YES \
+            -derivedDataPath ./DerivedData \
+            -resultBundlePath ./TestResults.xcresult
 
+      # Install Slather to generate lcov-compatible coverage
+      - name: Install Slather
+        run: gem install slather
+      
+      # Install xcresultparser
+      - name: Install xcresultparser
+        run: brew install xcresultparser
+        
+      # Generate lcov report using Slather
+      - name: Generate Coverage Report
+        run: |
+          slather coverage \
+            --scheme ${{ env.scheme }} \
+            --output-directory ./coverage \
+            --cobertura-xml \
+            --build-directory ./DerivedData \
+            ./${{ env.scheme }}.xcodeproj
+
+      # Convert .xcresult to JUnit XML for test results
+      - name: Convert Test Results to JUnit
+        run: |
+          xcresultparser \
+            --output-format junit \
+            ./TestResults.xcresult > ./test-results.xml
+            
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: ${{ github.repository }}
+          files: ./coverage/cobertura.xml
+
+      - name: Upload test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: ${{ github.repository }}
+          files: ./test-results.xml
