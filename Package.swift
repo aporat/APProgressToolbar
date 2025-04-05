@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "APProgressToolbar",
     platforms: [
-        .iOS(.v15),
+        .iOS(.v16),
         .tvOS(.v13),
         .macOS(.v12),
     ],
