@@ -25,7 +25,7 @@ let package = Package(
         .target(
             name: "APProgressToolbar",
             dependencies: ["GTProgressBar", "SnapKit"],
-            path: "APProgressToolbar"
+            path: "Sources"
         ),
         .testTarget(
             name: "APProgressToolbarTests",
