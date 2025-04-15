@@ -6,9 +6,7 @@ import PackageDescription
 let package = Package(
     name: "APProgressToolbar",
     platforms: [
-        .iOS(.v16),
-        .tvOS(.v13),
-        .macOS(.v12),
+        .iOS(.v16)
     ],
     products: [
         .library(
@@ -29,7 +27,9 @@ let package = Package(
         ),
         .testTarget(
             name: "APProgressToolbarTests",
-            dependencies: ["APProgressToolbar"]
+            dependencies: ["APProgressToolbar"],
+            path: "Tests"
         )
-    ]
+    ],
+    swiftLanguageVersions: [.v5]
 )

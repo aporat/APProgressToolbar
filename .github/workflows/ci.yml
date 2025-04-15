@@ -7,69 +7,75 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
-    name: ${{ matrix.platform }} on ${{ matrix.os }}
+  test:
+    name: Tests on ${{ matrix.device }} ${{ matrix.os }}
     runs-on: macos-latest
-    env:
-      scheme: APProgressToolbar
     strategy:
       fail-fast: false
       matrix:
         include:
-          - platform: iPhone 16 Pro
+          - platform: iOS Simulator
+            device: iPhone 16 Pro
             os: 18.2
+
     steps:
-      - uses: maxim-lobanov/setup-xcode@v1
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Xcode
+        uses: maxim-lobanov/setup-xcode@v1
         with:
           xcode-version: latest-stable
 
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
+      - name: Set Project Scheme
+        run: echo "scheme=$(basename ${{ github.repository }})" >> $GITHUB_ENV
 
-      - name: Run test on ${{ matrix.platform }} (iOS ${{ matrix.os }})
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.2
+          bundler-cache: true
+
+      - name: Install Project Gems
+        run: bundle install
+
+      - name: Run Tests with Code Coverage
         run: |
-          xcodebuild test \
-            -scheme ${{ env.scheme }} \
-            -destination 'platform=iOS Simulator,name=${{ matrix.platform }},OS=${{ matrix.os }}' \
+          set -o pipefail && \
+          xcodebuild \
+            -scheme "${{ env.scheme }}" \
+            -destination "${{ matrix.platform == 'macOS' && 'platform=macOS,arch=x86_64' || format('platform={0},name={1},OS={2}', matrix.platform, matrix.device, matrix.os) }}" \
             -enableCodeCoverage YES \
             -derivedDataPath ./DerivedData \
-            -resultBundlePath ./TestResults.xcresult
+            -resultBundlePath ./TestResults.xcresult \
+            test
 
-      # Install Slather to generate lcov-compatible coverage
-      - name: Install Slather
-        run: gem install slather
-      
-      # Install xcresultparser
       - name: Install xcresultparser
         run: brew install xcresultparser
-        
-      # Generate lcov report using Slather
-      - name: Generate Coverage Report
+
+      - name: Generate Coverage Report (Slather)
         run: |
-          slather coverage \
-            --scheme ${{ env.scheme }} \
+          bundle exec slather coverage \
+            --scheme "${{ env.scheme }}" \
             --output-directory ./coverage \
             --cobertura-xml \
             --build-directory ./DerivedData \
-            ./${{ env.scheme }}.xcodeproj
+            "./${{ env.scheme }}.xcodeproj"
 
-      # Convert .xcresult to JUnit XML for test results
       - name: Convert Test Results to JUnit
         run: |
           xcresultparser \
             --output-format junit \
             ./TestResults.xcresult > ./test-results.xml
-            
-      - name: Upload coverage reports to Codecov
+
+      - name: Upload Code Coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           slug: ${{ github.repository }}
           files: ./coverage/cobertura.xml
 
-      - name: Upload test results to Codecov
+      - name: Upload Test Results to Codecov
         if: ${{ !cancelled() }}
         uses: codecov/test-results-action@v1
         with:

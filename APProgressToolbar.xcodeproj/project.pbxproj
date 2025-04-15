@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 77;
+	objectVersion = 56;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -32,6 +32,11 @@
 		537EDD0424F49F1E003DC54A /* APProgressToolbar.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = APProgressToolbar.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		537EDD0D24F49F1E003DC54A /* APProgressToolbarTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = APProgressToolbarTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		537EDD1224F49F1E003DC54A /* ProgressToolbarTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressToolbarTests.swift; sourceTree = "<group>"; };
+		777A847C2DAEB7E900872AB4 /* ci.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = ci.yml; sourceTree = "<group>"; };
+		777A847E2DAEB7E900872AB4 /* dependabot.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = dependabot.yml; sourceTree = "<group>"; };
+		777A84802DAEB7E900872AB4 /* Gemfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Gemfile; sourceTree = "<group>"; };
+		777A84812DAEB7E900872AB4 /* Gemfile.lock */ = {isa = PBXFileReference; lastKnownFileType = text; path = Gemfile.lock; sourceTree = "<group>"; };
+		777A84822DAEB7E900872AB4 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		77EAA5C72D22198200A60EB2 /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -70,6 +75,10 @@
 			isa = PBXGroup;
 			children = (
 				77EAA5C72D22198200A60EB2 /* Package.swift */,
+				777A847F2DAEB7E900872AB4 /* .github */,
+				777A84802DAEB7E900872AB4 /* Gemfile */,
+				777A84812DAEB7E900872AB4 /* Gemfile.lock */,
+				777A84822DAEB7E900872AB4 /* README.md */,
 				535D10AE24F4A21400E3006D /* Sources */,
 				537EDD1124F49F1E003DC54A /* Tests */,
 				537EDD0524F49F1E003DC54A /* Products */,
@@ -91,6 +100,23 @@
 				537EDD1224F49F1E003DC54A /* ProgressToolbarTests.swift */,
 			);
 			path = Tests;
+			sourceTree = "<group>";
+		};
+		777A847D2DAEB7E900872AB4 /* workflows */ = {
+			isa = PBXGroup;
+			children = (
+				777A847C2DAEB7E900872AB4 /* ci.yml */,
+			);
+			path = workflows;
+			sourceTree = "<group>";
+		};
+		777A847F2DAEB7E900872AB4 /* .github */ = {
+			isa = PBXGroup;
+			children = (
+				777A847D2DAEB7E900872AB4 /* workflows */,
+				777A847E2DAEB7E900872AB4 /* dependabot.yml */,
+			);
+			path = .github;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -163,6 +189,7 @@
 				};
 			};
 			buildConfigurationList = 537EDCFE24F49F1E003DC54A /* Build configuration list for PBXProject "APProgressToolbar" */;
+			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -174,7 +201,6 @@
 				7747C81F2D22161700803000 /* XCRemoteSwiftPackageReference "SnapKit" */,
 				77EAA5C82D221AD900A60EB2 /* XCRemoteSwiftPackageReference "GTProgressBar" */,
 			);
-			preferredProjectObjectVersion = 77;
 			productRefGroup = 537EDD0524F49F1E003DC54A /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
