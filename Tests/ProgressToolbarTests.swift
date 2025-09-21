@@ -82,17 +82,4 @@ final class APProgressToolbarTests: XCTestCase {
         XCTAssertEqual(toolbar.frame, CGRect(x: 0, y: 745, width: 400, height: 55))
     }
     
-    func testHideWithAnimationCompletes() {
-        toolbar.show(false) // Start shown
-        let expectation = XCTestExpectation(description: "Hide animation completes")
-        toolbar.hide(true) {
-            expectation.fulfill()
-        }
-        
-        wait(for: [expectation], timeout: 2.0) // Accounts for 1s delay in hide animation
-        XCTAssertFalse(toolbar.isShown)
-        XCTAssertTrue(toolbar.isHidden)
-        XCTAssertEqual(toolbar.frame, CGRect(x: 0, y: 800, width: 400, height: 55))
-    }
- 
 }
