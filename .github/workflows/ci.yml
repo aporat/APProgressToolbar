@@ -21,6 +21,4 @@ jobs:
           xcode-version: latest-stable
 
       - name: Run tests and generate report
-        run: xcodebuild test \
-          -scheme APProgressToolbar \
-          -destination 'platform=iOS Simulator,name=iPhone Air,OS=26.0'
+        run: xcodebuild test -scheme APProgressToolbar -destination 'platform=iOS Simulator,name=iPhone Air,OS=26.0'
