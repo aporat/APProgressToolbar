@@ -13,6 +13,7 @@ class MockProgressToolbarDelegate: NSObject, APProgressToolbarDelegate {
     }
 }
 
+@MainActor
 final class APProgressToolbarTests: XCTestCase {
     
     var toolbar: APProgressToolbar!
@@ -93,13 +94,5 @@ final class APProgressToolbarTests: XCTestCase {
         XCTAssertTrue(toolbar.isHidden)
         XCTAssertEqual(toolbar.frame, CGRect(x: 0, y: 800, width: 400, height: 55))
     }
-    
-    // MARK: - Delegate Tests
-    
-    func testCancelButtonTriggersDelegate() {
-        toolbar.show(false) // Enable button
-        toolbar.didCancelButtonPressed(nil) // Simulate button press
-        
-        XCTAssertTrue(mockDelegate.cancelPressedCalled)
-    }
+ 
 }

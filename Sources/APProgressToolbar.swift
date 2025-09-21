@@ -2,198 +2,196 @@ import GTProgressBar
 import SnapKit
 import UIKit
 
+// MARK: - Protocol
 public protocol APProgressToolbarDelegate: AnyObject {
     func didCancelButtonPressed(_ toolbar: APProgressToolbar)
 }
 
+// MARK: - Class
+@MainActor
 public final class APProgressToolbar: UIView {
-    fileprivate var didSetupConstraints = false
-    fileprivate let orientationDidChange = UIDevice.orientationDidChangeNotification
-
+    
+    // MARK: - Properties
     public weak var actionDelegate: APProgressToolbarDelegate?
-    public var isShown = false
-
+    public private(set) var isShown = false
+    
     public var text: String? {
         didSet {
             titleLabel.text = text
         }
     }
-
+    
     // MARK: - UI Elements
-
-    fileprivate lazy var stopButton: UIButton = {
+    private lazy var stopButton: UIButton = {
         let button = UIButton(type: .custom)
         button.backgroundColor = .clear
         button.setImage(UIImage(named: "toolbar-stop"), for: .normal)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(didCancelButtonPressed(_:)), for: .touchUpInside)
+        
+        let action = UIAction { [weak self] _ in
+            guard let self = self else { return }
+            self.actionDelegate?.didCancelButtonPressed(self)
+        }
+        button.addAction(action, for: .touchUpInside)
         return button
     }()
-
-    // MARK: - UI Elements
-
-    fileprivate lazy var mainBackgroundView: UIView = {
+    
+    private lazy var mainBackgroundView: UIView = {
         let view = UIView()
         view.backgroundColor = .black
         view.alpha = 0.75
-
         return view
     }()
-
-    fileprivate lazy var titleLabel: UILabel = {
-        let view = UILabel()
-        view.font = UIFont.systemFont(ofSize: 13)
-        view.textColor = .white
-        view.textAlignment = .center
-        view.backgroundColor = .clear
-
-        return view
+    
+    private lazy var titleLabel: UILabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 13)
+        label.textColor = .white
+        label.textAlignment = .center
+        label.backgroundColor = .clear
+        return label
     }()
-
+    
     public lazy var progressBar: GTProgressBar = {
-        let view = GTProgressBar()
-        view.displayLabel = true
-        view.font = UIFont.systemFont(ofSize: 13)
-        view.labelTextColor = .white
-        view.progressLabelInsetRight = 15
-        view.barFillInset = 1
-
-        return view
+        let bar = GTProgressBar()
+        bar.displayLabel = true
+        bar.font = .systemFont(ofSize: 13)
+        bar.labelTextColor = .white
+        bar.progressLabelInsetRight = 15
+        bar.barFillInset = 1
+        return bar
     }()
-
-    // MARK: - UIView
-
-    override required init(frame: CGRect) {
+    
+    // MARK: - Initialization
+    public override init(frame: CGRect) {
         super.init(frame: frame)
-        setupSubviews()
+        setupView()
     }
-
-    @available(*, unavailable)
-    required init?(coder _: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    
+    public required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setupView()
     }
-
-    override public func awakeFromNib() {
-        super.awakeFromNib()
-        setupSubviews()
+    
+    // MARK: - Lifecycle
+    public override func updateConstraints() {
+        super.updateConstraints()
+        setupConstraints()
     }
-
+    
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
-
-    override public func updateConstraints() {
-        super.updateConstraints()
-
-        if !didSetupConstraints {
-            mainBackgroundView.snp.makeConstraints { make in
-                make.edges.equalTo(self)
+    
+    // MARK: - Public Methods
+    public func show(_ animated: Bool, completion: (() -> Void)? = nil) {
+        guard !isShown else {
+            completion?()
+            return
+        }
+        
+        isShown = true
+        stopButton.isEnabled = true
+        
+        if let superview = superview {
+            self.frame = CGRect(x: 0, y: superview.bounds.height, width: superview.bounds.width, height: 55)
+            self.isHidden = false
+            
+            let finalFrame = CGRect(x: 0, y: superview.bounds.height - 55, width: superview.bounds.width, height: 55)
+            
+            if animated {
+                UIView.animate(withDuration: 0.4, animations: {
+                    self.frame = finalFrame
+                }, completion: { _ in
+                    completion?()
+                })
+            } else {
+                self.frame = finalFrame
+                completion?()
             }
-
-            stopButton.snp.makeConstraints { make in
-                make.centerY.equalTo(self)
-                make.size.equalTo(25)
-                make.trailing.equalTo(self).offset(-14)
-            }
-
-            titleLabel.snp.makeConstraints { make in
-                make.top.equalTo(self).offset(5)
-                make.height.equalTo(16)
-                make.centerX.equalTo(self)
-            }
-
-            progressBar.snp.makeConstraints { make in
-                make.top.equalTo(titleLabel.snp.bottom).offset(2)
-                make.height.equalTo(12)
-                make.leading.equalTo(self).offset(14)
-                make.trailing.equalTo(stopButton.snp.leading).offset(-10)
-            }
-
-            didSetupConstraints = true
         }
     }
-
-    fileprivate func setupSubviews() {
-        NotificationCenter.default.addObserver(self, selector: #selector(setupPosition), name: orientationDidChange, object: nil)
-
+    
+    public func hide(_ animated: Bool, completion: (() -> Void)? = nil) {
+        guard isShown else {
+            completion?()
+            return
+        }
+        
+        isShown = false
+        stopButton.isEnabled = false
+        
+        if let superview = superview {
+            let finalFrame = CGRect(x: 0, y: superview.bounds.height, width: superview.bounds.width, height: 55)
+            
+            if animated {
+                UIView.animate(withDuration: 0.4, delay: 1.0, options: [], animations: {
+                    self.frame = finalFrame
+                }, completion: { _ in
+                    self.isHidden = true
+                    completion?()
+                })
+            } else {
+                self.frame = finalFrame
+                self.isHidden = true
+                completion?()
+            }
+        }
+    }
+    
+    // MARK: - Actions
+    private func didCancelButtonPressed() {
+        actionDelegate?.didCancelButtonPressed(self)
+    }
+    
+    // MARK: - Private Methods
+    private func setupView() {
         addSubview(mainBackgroundView)
         addSubview(stopButton)
         addSubview(titleLabel)
         addSubview(progressBar)
-
+        
         setNeedsUpdateConstraints()
+        
+        NotificationCenter.default.addObserver(
+            forName: UIDevice.orientationDidChangeNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor in
+                guard let self = self else { return }
+                self.deviceOrientationDidChange()
+            }
+        }
     }
-
-    @objc fileprivate func setupPosition() {
+    
+    private func setupConstraints() {
+        mainBackgroundView.snp.makeConstraints { make in
+            make.edges.equalTo(self)
+        }
+        
+        stopButton.snp.makeConstraints { make in
+            make.centerY.equalToSuperview()
+            make.size.equalTo(25)
+            make.trailing.equalToSuperview().offset(-14)
+        }
+        
+        titleLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(5)
+            make.height.equalTo(16)
+            make.centerX.equalToSuperview()
+        }
+        
+        progressBar.snp.makeConstraints { make in
+            make.top.equalTo(titleLabel.snp.bottom).offset(2)
+            make.height.equalTo(12)
+            make.leading.equalToSuperview().offset(14)
+            make.trailing.equalTo(stopButton.snp.leading).offset(-10)
+        }
+    }
+    
+    private func deviceOrientationDidChange() {
         if isShown {
-            hide(false) {
-                self.isHidden = false
-                self.show(false)
-            }
-        } else {
-            setNeedsLayout()
+            show(false)
         }
-    }
-
-    public func show(_ animated: Bool, completion: (() -> Void)? = nil) {
-        if !isShown {
-            isShown = true
-
-            stopButton.isEnabled = true
-
-            if let superview = self.superview {
-                frame = CGRect(x: 0, y: superview.bounds.size.height, width: superview.bounds.size.width, height: 55)
-            }
-
-            if animated {
-                UIView.animate(withDuration: 0.4, delay: 0.0, options: [], animations: {
-                    if let superview = self.superview {
-                        self.frame = CGRect(x: 0, y: superview.bounds.size.height - 55, width: superview.bounds.size.width, height: 55)
-                    }
-                }) { _ in
-                    self.isHidden = false
-                    completion?()
-                }
-            } else {
-                if let superview = self.superview {
-                    frame = CGRect(x: 0, y: superview.bounds.size.height - 55, width: superview.bounds.size.width, height: 55)
-                    isHidden = false
-                    completion?()
-                }
-            }
-        } else {
-            completion?()
-        }
-    }
-
-    public func hide(_ animated: Bool, completion: (() -> Void)? = nil) {
-        if isShown {
-            isShown = false
-
-            stopButton.isEnabled = false
-
-            if animated {
-                UIView.animate(withDuration: 0.4, delay: 1.0, options: [], animations: {
-                    if let superview = self.superview {
-                        self.frame = CGRect(x: 0, y: superview.bounds.size.height, width: superview.bounds.size.width, height: 55)
-                    }
-                }) { _ in
-                    self.isHidden = true
-                    completion?()
-                }
-            } else {
-                if let superview = self.superview {
-                    frame = CGRect(x: 0, y: superview.bounds.size.height, width: superview.bounds.size.width, height: 55)
-                    isHidden = true
-                    completion?()
-                }
-            }
-        } else {
-            completion?()
-        }
-    }
-
-    @objc public func didCancelButtonPressed(_: Any?) {
-        actionDelegate?.didCancelButtonPressed(self)
     }
 }

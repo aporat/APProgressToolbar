@@ -1,4 +1,4 @@
-// swift-tools-version:5.9
+// swift-tools-version:6.0
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -17,7 +17,6 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/aporat/GTProgressBar.git", from: "1.0.0"),
         .package(url: "https://github.com/SnapKit/SnapKit.git", from: "5.0.0")
-
     ],
     targets: [
         .target(
@@ -30,6 +29,5 @@ let package = Package(
             dependencies: ["APProgressToolbar"],
             path: "Tests"
         )
-    ],
-    swiftLanguageVersions: [.v5]
+    ]
 )
