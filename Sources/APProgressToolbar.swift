@@ -83,59 +83,54 @@ public final class APProgressToolbar: UIView {
     }
     
     // MARK: - Public Methods
-    public func show(_ animated: Bool, completion: (() -> Void)? = nil) {
-        guard !isShown else {
-            completion?()
-            return
-        }
+    public func show(_ animated: Bool) async {
+        guard !isShown, let superview = superview else { return }
         
         isShown = true
         stopButton.isEnabled = true
         
-        if let superview = superview {
-            self.frame = CGRect(x: 0, y: superview.bounds.height, width: superview.bounds.width, height: 55)
-            self.isHidden = false
-            
-            let finalFrame = CGRect(x: 0, y: superview.bounds.height - 55, width: superview.bounds.width, height: 55)
-            
-            if animated {
-                UIView.animate(withDuration: 0.4, animations: {
-                    self.frame = finalFrame
-                }, completion: { _ in
-                    completion?()
-                })
-            } else {
+        self.frame = CGRect(x: 0, y: superview.bounds.height, width: superview.bounds.width, height: 55)
+        self.isHidden = false
+        
+        let finalFrame = CGRect(x: 0, y: superview.bounds.height - 55, width: superview.bounds.width, height: 55)
+        
+        if !animated {
+            self.frame = finalFrame
+            return
+        }
+        
+        await withCheckedContinuation { continuation in
+            UIView.animate(withDuration: 0.4, animations: {
                 self.frame = finalFrame
-                completion?()
-            }
+            }, completion: { _ in
+                continuation.resume()
+            })
         }
     }
     
-    public func hide(_ animated: Bool, completion: (() -> Void)? = nil) {
-        guard isShown else {
-            completion?()
-            return
-        }
+    public func hide(_ animated: Bool) async {
+        guard isShown, let superview = superview else { return }
         
         isShown = false
         stopButton.isEnabled = false
         
-        if let superview = superview {
-            let finalFrame = CGRect(x: 0, y: superview.bounds.height, width: superview.bounds.width, height: 55)
-            
-            if animated {
-                UIView.animate(withDuration: 0.4, delay: 1.0, options: [], animations: {
-                    self.frame = finalFrame
-                }, completion: { _ in
-                    self.isHidden = true
-                    completion?()
-                })
-            } else {
-                self.frame = finalFrame
-                self.isHidden = true
-                completion?()
-            }
+        let finalFrame = CGRect(x: 0, y: superview.bounds.height, width: superview.bounds.width, height: 55)
+        
+        if !animated {
+            self.frame = finalFrame
+            self.isHidden = true
+            return
         }
+        
+        await withCheckedContinuation { continuation in
+            UIView.animate(withDuration: 0.4, delay: 1.0, options: [], animations: {
+                self.frame = finalFrame
+            }, completion: { _ in
+                continuation.resume()
+            })
+        }
+        
+        self.isHidden = true
     }
     
     // MARK: - Actions
@@ -159,7 +154,7 @@ public final class APProgressToolbar: UIView {
         ) { [weak self] _ in
             Task { @MainActor in
                 guard let self = self else { return }
-                self.deviceOrientationDidChange()
+                await self.deviceOrientationDidChange()
             }
         }
     }
@@ -189,9 +184,9 @@ public final class APProgressToolbar: UIView {
         }
     }
     
-    private func deviceOrientationDidChange() {
+    private func deviceOrientationDidChange() async {
         if isShown {
-            show(false)
+            await show(false)
         }
     }
 }
