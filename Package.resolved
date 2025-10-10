@@ -1,12 +1,13 @@
 {
+  "originHash" : "85353d8f110e818d5fc274e23c493151b9f2c1d22e38bc373a53ed73b49703dd",
   "pins" : [
     {
       "identity" : "gtprogressbar",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/aporat/GTProgressBar.git",
       "state" : {
-        "revision" : "9a23f6a96b66ee39d75bd385ef3c431a8a8d9f2a",
-        "version" : "1.0.0"
+        "revision" : "bcd31d6a329b6112163b218ed12ca61d316775cf",
+        "version" : "1.1.0"
       }
     },
     {
@@ -19,5 +20,5 @@
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }
