@@ -185,8 +185,15 @@ public final class APProgressToolbar: UIView {
     }
     
     private func deviceOrientationDidChange() async {
-        if isShown {
-            await show(false)
-        }
+        guard isShown, let superview = superview else { return }
+        
+        let finalFrame = CGRect(
+            x: 0,
+            y: superview.bounds.height - 55,
+            width: superview.bounds.width,
+            height: 55
+        )
+        
+        self.frame = finalFrame
     }
 }
