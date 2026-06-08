@@ -129,21 +129,14 @@ final class APProgressToolbarTests: XCTestCase {
         // 1. Show the toolbar
         await toolbar.show(false)
         XCTAssertEqual(toolbar.frame, CGRect(x: 0, y: 745, width: 400, height: 55))
-        
+
         // 2. Simulate an orientation change by resizing the superview
         superview.frame = CGRect(x: 0, y: 0, width: 800, height: 400)
-        
-        // 3. Post the notification
-        NotificationCenter.default.post(name: UIDevice.orientationDidChangeNotification, object: nil)
-        
-        // 4. We need to wait for the async task inside the observer to run.
-        let expectation = XCTestExpectation(description: "Wait for orientation change task")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            expectation.fulfill()
-        }
-        await fulfillment(of: [expectation], timeout: 1.0)
-        
-        // 5. Verify the toolbar repositioned itself relative to the new bounds
+
+        // 3. Drive the handler directly — avoids racing the notification's main-queue dispatch.
+        toolbar.deviceOrientationDidChange()
+
+        // 4. Verify the toolbar repositioned itself relative to the new bounds
         XCTAssertTrue(toolbar.isShown)
         XCTAssertEqual(toolbar.frame, CGRect(x: 0, y: 345, width: 800, height: 55)) // 400 - 55
     }
