@@ -1,5 +1,5 @@
 {
-  "originHash" : "85353d8f110e818d5fc274e23c493151b9f2c1d22e38bc373a53ed73b49703dd",
+  "originHash" : "66b826a3aadb4098e8cfd2627c0a68f1f7691156c4f42cb37c5f492a310b186d",
   "pins" : [
     {
       "identity" : "gtprogressbar",
@@ -15,8 +15,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/SnapKit/SnapKit.git",
       "state" : {
-        "revision" : "2842e6e84e82eb9a8dac0100ca90d9444b0307f4",
-        "version" : "5.7.1"
+        "revision" : "e27a338a03a5f388de759da63f9baf7988ed9e00",
+        "version" : "6.0.0"
       }
     }
   ],

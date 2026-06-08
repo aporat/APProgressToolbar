@@ -16,7 +16,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/aporat/GTProgressBar.git", from: "1.1.0"),
-        .package(url: "https://github.com/SnapKit/SnapKit.git", from: "6.0.0")
+        .package(url: "https://github.com/SnapKit/SnapKit.git", from: "7.0.0")
     ],
     targets: [
         .target(
