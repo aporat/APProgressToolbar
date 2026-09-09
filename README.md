@@ -5,7 +5,6 @@ A Swift package providing a customizable toolbar with a progress bar, title, and
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Faporat%2FAAPProgressToolbar%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/aporat/APProgressToolbar)
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Faporat%2FAPProgressToolbar%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/aporat/APProgressToolbar)
 ![GitHub Actions Workflow Status](https://github.com/aporat/APProgressToolbar/actions/workflows/ci.yml/badge.svg)
-[![codecov](https://codecov.io/github/aporat/APProgressToolbar/graph/badge.svg?token=OHF9AE0KMC)](https://codecov.io/github/aporat/APProgressToolbar)
 
 
 ## Installation
@@ -32,43 +31,53 @@ Then include it in your target:
 ```
 
 ## Usage
-```swift
-class ViewController: UIViewController {
 
-    lazy fileprivate var loadingToolbar: APProgressToolbar = {
+The toolbar positions itself at the bottom of its superview. Add it once, then drive it with
+`show(_:)` / `hide(_:)`, `text`, and `progressBar.progress`.
+
+```swift
+final class HomeController: UIViewController {
+
+    private lazy var loadingToolbar: APProgressToolbar = {
         let view = APProgressToolbar()
-        view.progressBar.barBorderColor = .black
-        view.progressBar.barBackgroundColor = .black
-        view.progressBar.barBorderWidth = 1
-        view.progressBar.barFillColor = .white
         view.isHidden = true
+        view.cardBackgroundColor = .systemBackground
+        view.titleColor = .label
+        view.progressColors = [.systemBlue, .systemTeal]
         return view
     }()
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         loadingToolbar.actionDelegate = self
-        loadingToolbar.frame = CGRect(x: 0, y: view.bounds.size.height, width: view.bounds.size.width, height: 55)
         view.addSubview(loadingToolbar)
-        
+        loadingToolbar.updateLayout()
     }
-    
-    @IBAction func showToolbar(_ sender: Any) {
-        loadingToolbar.show(true, completion: nil)
+
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        coordinator.animate(alongsideTransition: nil) { [weak self] _ in
+            self?.loadingToolbar.updateLayout()
+        }
+    }
+
+    func startLoading() {
         loadingToolbar.text = NSLocalizedString("Loading...", comment: "")
-        loadingToolbar.progressBar.progress = 0.5
+        loadingToolbar.progressBar.progress = 0
+        Task { await loadingToolbar.show(true) }
     }
-    
-    @IBAction func hideToolbar(_ sender: Any) {
-        loadingToolbar.hide(true, completion: nil)
+
+    func finishLoading() {
+        loadingToolbar.progressBar.progress = 1
+        Task { await loadingToolbar.hide(true) }   // waits a moment, then slides out
     }
 }
 
-// MARK: - APProgressToolbarDelegate
-extension ViewController: APProgressToolbarDelegate {
-func didCancelButtonPressed(_ toolbar: APProgressToolbar) {
-
+extension HomeController: APProgressToolbarDelegate {
+    func didCancelButtonPressed(_ toolbar: APProgressToolbar) {
+        // stop the work
     }
 }
 ```
+
+Set `extraBottomOffset` to keep the card above content pinned to the bottom, such as an ad banner.

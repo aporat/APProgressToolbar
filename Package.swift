@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "APProgressToolbar",
     platforms: [
-        .iOS(.v16)
+        .iOS(.v17)
     ],
     products: [
         .library(
@@ -15,13 +15,12 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(url: "https://github.com/aporat/GTProgressBar.git", from: "1.1.0"),
         .package(url: "https://github.com/SnapKit/SnapKit.git", from: "6.0.0")
     ],
     targets: [
         .target(
             name: "APProgressToolbar",
-            dependencies: ["GTProgressBar", "SnapKit"],
+            dependencies: ["SnapKit"],
             path: "Sources"
         ),
         .testTarget(
