@@ -17,8 +17,8 @@ jobs:
       matrix:
         include:
           - platform: iOS Simulator
-            device: iPhone 17
-            os: "26.0.1"
+            device: iPhone Air
+            os: "26.5"
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
