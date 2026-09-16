@@ -29,6 +29,8 @@ public final class APProgressToolbar: UIView {
         static let contentInsets = UIEdgeInsets(top: 12, left: 14, bottom: 14, right: 14)
         static let cancelButtonSize: CGFloat = 28
         static let trackHeight: CGFloat = 6
+        /// Space between the progress track and the subtext line below it.
+        static let subtextSpacing: CGFloat = 10
         static let hideDelay: Duration = .seconds(1)
     }
     
@@ -39,6 +41,16 @@ public final class APProgressToolbar: UIView {
     
     public var text: String? {
         didSet { titleLabel.text = text }
+    }
+
+    /// Secondary line shown under the progress track; the card grows to fit it. `nil` hides the
+    /// line and restores the compact card.
+    public var subtext: String? {
+        didSet {
+            subtextLabel.text = subtext
+            subtextLabel.isHidden = (subtext ?? "").isEmpty
+            updateLayout()
+        }
     }
     
     /// Extra space to leave at the bottom, for example the height of an ad banner.
@@ -56,8 +68,10 @@ public final class APProgressToolbar: UIView {
     public var trackColor: UIColor = .tertiarySystemFill { didSet { applyAppearance() } }
     /// Left-to-right fill colors of the progress track. A single color gives a flat fill.
     public var progressColors: [UIColor] = [.systemBlue] { didSet { applyAppearance() } }
+    public var subtextColor: UIColor = .secondaryLabel { didSet { applyAppearance() } }
     public var titleFont: UIFont = .systemFont(ofSize: 14, weight: .semibold) { didSet { applyAppearance() } }
     public var percentFont: UIFont = .systemFont(ofSize: 13, weight: .semibold) { didSet { applyAppearance() } }
+    public var subtextFont: UIFont = .systemFont(ofSize: 13) { didSet { applyAppearance() } }
     public var cornerRadius: CGFloat = 18 { didSet { applyAppearance() } }
     
     // MARK: - UI Elements
@@ -110,6 +124,14 @@ public final class APProgressToolbar: UIView {
         return button
     }()
     
+    let subtextLabel: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .natural
+        label.numberOfLines = 0
+        label.isHidden = true
+        return label
+    }()
+
     public lazy var progressBar: APProgressBar = {
         let bar = APProgressBar()
         bar.onProgressChanged = { [weak self] progress in
@@ -211,17 +233,26 @@ public final class APProgressToolbar: UIView {
     
     // MARK: - Frames
     
+    /// Compact height plus whatever the (wrapped) subtext needs.
+    private func cardHeight(forWidth width: CGFloat) -> CGFloat {
+        guard let subtext, !subtext.isEmpty else { return Layout.cardHeight }
+        let textWidth = width - Layout.contentInsets.left - Layout.contentInsets.right
+        let textHeight = subtextLabel.sizeThatFits(CGSize(width: textWidth, height: .greatestFiniteMagnitude)).height
+        return Layout.cardHeight + Layout.subtextSpacing + textHeight.rounded(.up)
+    }
+
     private func shownFrame() -> CGRect {
         guard let superview else { return .zero }
         let width = superview.bounds.width - Layout.horizontalInset * 2
-        let y = superview.bounds.height - superview.safeAreaInsets.bottom - extraBottomOffset - Layout.bottomInset - Layout.cardHeight
-        return CGRect(x: Layout.horizontalInset, y: y, width: width, height: Layout.cardHeight)
+        let height = cardHeight(forWidth: width)
+        let y = superview.bounds.height - superview.safeAreaInsets.bottom - extraBottomOffset - Layout.bottomInset - height
+        return CGRect(x: Layout.horizontalInset, y: y, width: width, height: height)
     }
     
     private func hiddenFrame() -> CGRect {
         guard let superview else { return .zero }
         let width = superview.bounds.width - Layout.horizontalInset * 2
-        return CGRect(x: Layout.horizontalInset, y: superview.bounds.height + 20, width: width, height: Layout.cardHeight)
+        return CGRect(x: Layout.horizontalInset, y: superview.bounds.height + 20, width: width, height: cardHeight(forWidth: width))
     }
     
     // MARK: - Setup
@@ -239,6 +270,7 @@ public final class APProgressToolbar: UIView {
         cardView.addSubview(percentLabel)
         cardView.addSubview(stopButton)
         cardView.addSubview(progressBar)
+        cardView.addSubview(subtextLabel)
         
         cardView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
@@ -267,10 +299,20 @@ public final class APProgressToolbar: UIView {
             make.trailing.lessThanOrEqualTo(percentLabel.snp.leading).offset(-12)
         }
         
+        // Top-pinned so the track keeps its place when the subtext grows the card downward.
+        // The offset reproduces the track's position in the compact `Layout.cardHeight` card.
         progressBar.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(Layout.contentInsets.left)
-            make.bottom.equalToSuperview().inset(Layout.contentInsets.bottom)
+            make.top.equalTo(stopButton.snp.bottom).offset(
+                Layout.cardHeight - Layout.contentInsets.bottom - Layout.trackHeight
+                    - (Layout.contentInsets.top - 4) - Layout.cancelButtonSize
+            )
             make.height.equalTo(Layout.trackHeight)
+        }
+
+        subtextLabel.snp.makeConstraints { make in
+            make.top.equalTo(progressBar.snp.bottom).offset(Layout.subtextSpacing)
+            make.leading.trailing.equalToSuperview().inset(Layout.contentInsets.left)
         }
         
         // CGColor-backed properties (border, shadow) don't follow dynamic colors on their own.
@@ -290,6 +332,8 @@ public final class APProgressToolbar: UIView {
         titleLabel.textColor = titleColor
         percentLabel.font = percentFont
         percentLabel.textColor = percentColor
+        subtextLabel.font = subtextFont
+        subtextLabel.textColor = subtextColor
         
         stopButton.backgroundColor = cancelButtonBackgroundColor
         stopButton.tintColor = cancelButtonTintColor
